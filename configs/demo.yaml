@@ -10,7 +10,7 @@ defaults:
   - paths: default.yaml
   - extras: default.yaml
   - hydra: default.yaml
-  - experiment: null
+  - experiment: example.yaml
 
 task_name: "demo"
 

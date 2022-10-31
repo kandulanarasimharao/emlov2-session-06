@@ -1,3 +1,5 @@
+outputs/
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
@@ -151,4 +153,3 @@ logs/
 .env
 .autoenv
 /data
-/logs

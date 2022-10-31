@@ -6,14 +6,13 @@ from torch.utils.data import ConcatDataset, DataLoader, Dataset, random_split
 from torchvision.datasets import CIFAR10
 from torchvision.transforms import transforms
 
-
 class CIFAR10DataModule(LightningDataModule):
     def __init__(
         self,
         data_dir: str = "./",
         train_val_test_split: Tuple[int, int, int] = (45_000, 5_000, 10_000),
         batch_size: int = 64,
-        num_workers: int = 16,
+        num_workers: int = 0,
         pin_memory: bool = False,
     ):
         super().__init__()
@@ -22,8 +21,6 @@ class CIFAR10DataModule(LightningDataModule):
         # also ensures init params will be stored in ckpt
         self.save_hyperparameters(logger=False)
 
-        # self.data_dir = data_dir
-
         self.transforms = transforms.Compose(
             [
                 transforms.Resize(224),
@@ -31,6 +28,7 @@ class CIFAR10DataModule(LightningDataModule):
                 transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5)),
             ]
         )
+
         self.dims = (3, 32, 32)
         # self.num_classes = 10
 
@@ -48,6 +46,7 @@ class CIFAR10DataModule(LightningDataModule):
         CIFAR10(self.hparams.data_dir, train=False, download=True)
 
     def setup(self, stage=None):
+        # load and split datasets only if not loaded already
         if not self.data_train and not self.data_val and not self.data_test:
             trainset = CIFAR10(self.hparams.data_dir, train=True, transform=self.transforms)
             testset = CIFAR10(self.hparams.data_dir, train=False, transform=self.transforms)
@@ -96,3 +95,4 @@ class CIFAR10DataModule(LightningDataModule):
     def load_state_dict(self, state_dict: Dict[str, Any]):
         """Things to do when loading checkpoint."""
         pass
+        
